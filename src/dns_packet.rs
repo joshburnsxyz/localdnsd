@@ -1,3 +1,11 @@
+use crate::{dns_question, dns_header, dns_record, byte_packet_buffer};
+
+use dns_header::DnsHeader;
+use dns_question::{QueryType, DnsQuestion};
+use dns_record::DnsRecord;
+use byte_packet_buffer::BytePacketBuffer;
+use std::io::Result;
+
 #[derive(Clone, Debug)]
 pub struct DnsPacket {
     pub header: DnsHeader,
