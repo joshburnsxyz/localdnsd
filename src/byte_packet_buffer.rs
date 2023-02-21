@@ -16,26 +16,26 @@ impl BytePacketBuffer {
     }
 
     // Return current position value
-    fn pos(&self) -> usize {
+    pub fn pos(&self) -> usize {
         return self.pos;
     }
 
     // Move forward in the buffer X steps.
-    fn step(&mut self, steps: usize) -> io::Result<()> {
+    pub fn step(&mut self, steps: usize) -> io::Result<()> {
         self.pos += steps;
 
         Ok(())
     }
 
     // Goto specific buffer position
-    fn seek(&mut self, pos: usize) -> io::Result<()> {
+    pub fn seek(&mut self, pos: usize) -> io::Result<()> {
         self.pos = pos;
 
         Ok(())
     }
 
     // Read a single byte and step forward
-    fn read(&mut self) -> io::Result<u8> {
+    pub fn read(&mut self) -> io::Result<u8> {
         // if we are at or over 512 bytes, bail out.
         if self.pos >= 512 {
             return Err(io::Error::new(io::ErrorKind::Other, "End of buffer"));
@@ -48,7 +48,7 @@ impl BytePacketBuffer {
     }
 
     // Get a single byte value without changing buffer position
-    fn get(&self, pos: usize) -> io::Result<u8> {
+    pub fn get(&self, pos: usize) -> io::Result<u8> {
         if self.pos >= 512 {
             return Err(io::Error::new(io::ErrorKind::Other, "End of buffer"));
         }
@@ -58,7 +58,7 @@ impl BytePacketBuffer {
     }
 
     // Read a range of byte values
-    fn get_range(&mut self, start: usize, len: usize) -> io::Result<&[u8]> {
+    pub fn get_range(&mut self, start: usize, len: usize) -> io::Result<&[u8]> {
         if start + len >= 512 {
             return Err(io::Error::new(io::ErrorKind::Other, "End of buffer"));
         }
