@@ -1,3 +1,10 @@
+
+use super::{result_code,byte_packet_buffer};
+
+use result_code::{ResultCode};
+use byte_packet_buffer::{BytePacketBuffer};
+use std::io::Result;
+
 #[derive(Clone, Debug)]
 pub struct DnsHeader {
     pub id: u16, // 16 bits
