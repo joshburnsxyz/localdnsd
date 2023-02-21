@@ -1,10 +1,10 @@
 use crate::byte_packet_buffer;
 use crate::dns;
 
-use dns::header::DnsHeader;
-use dns::question::{QueryType, DnsQuestion};
-use dns::record::DnsRecord;
 use byte_packet_buffer::BytePacketBuffer;
+use dns::header::DnsHeader;
+use dns::question::{DnsQuestion, QueryType};
+use dns::record::DnsRecord;
 use std::io::Result;
 
 #[derive(Clone, Debug)]
@@ -51,5 +51,29 @@ impl DnsPacket {
         }
 
         Ok(result)
+    }
+
+    pub fn write(&mut self, buffer: &mut BytePacketBuffer) -> Result<()> {
+        self.header.questions = self.questions.len() as u16;
+        self.header.answers = self.answers.len() as u16;
+        self.header.authoritative_entries = self.authorities.len() as u16;
+        self.header.resource_entries = self.resources.len() as u16;
+
+        self.header.write(buffer)?;
+
+        for question in &self.questions {
+            question.write(buffer)?;
+        }
+        for rec in &self.answers {
+            rec.write(buffer)?;
+        }
+        for rec in &self.authorities {
+            rec.write(buffer)?;
+        }
+        for rec in &self.resources {
+            rec.write(buffer)?;
+        }
+
+        Ok(())
     }
 }
