@@ -2,7 +2,7 @@ use crate::byte_packet_buffer::BytePacketBuffer;
 use crate::dns::packet::DnsPacket;
 use crate::dns::question::{DnsQuestion, QueryType};
 
-use std::io::Result;
+use std::io::{Result, Error, ErrorKind};
 use std::net::UdpSocket;
 
 // Parse DNS response packet (from a text file) and print
@@ -43,17 +43,23 @@ pub fn a_query(qname: &str) -> Result<DnsPacket> {
 
     // Write packet to a new buffer
     let mut req_buffer = BytePacketBuffer::new();
-    packet.write(&mut req_buffer);
+    match packet.write(&mut req_buffer) {
+        Err(err) => {return Err(Error::new(ErrorKind::Other, err))},
+        Ok(_) =>  {/* Do not handle successful write*/}
+    }
 
     // Relay to server using the socket
     socket.send_to(&req_buffer.buf[0..req_buffer.pos], server)?;
 
     // Create a buffer to hold response
     let mut res_buffer = BytePacketBuffer::new();
-    socket.recv_from(&mut res_buffer.buf);
+    match socket.recv_from(&mut res_buffer.buf) {
+        Err(err) => {return Err(Error::new(ErrorKind::Other, err))},
+        Ok(_) =>  {
+            // Parse response using DnsPacket::from_buffer()
+            let res_packet = DnsPacket::from_buffer(&mut res_buffer)?;
+            Ok(res_packet)
+        }
+    }
 
-    // Parse response using DnsPacket::from_buffer()
-    let res_packet = DnsPacket::from_buffer(&mut res_buffer)?;
-
-    Ok(res_packet)
 }
