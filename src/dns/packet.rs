@@ -1,8 +1,9 @@
-use crate::{dns_question, dns_header, dns_record, byte_packet_buffer};
+use crate::byte_packet_buffer;
+use crate::dns;
 
-use dns_header::DnsHeader;
-use dns_question::{QueryType, DnsQuestion};
-use dns_record::DnsRecord;
+use dns::header::DnsHeader;
+use dns::question::{QueryType, DnsQuestion};
+use dns::record::DnsRecord;
 use byte_packet_buffer::BytePacketBuffer;
 use std::io::Result;
 

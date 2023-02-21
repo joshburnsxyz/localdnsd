@@ -1,8 +1,9 @@
-use crate::{byte_packet_buffer,dns_question};
+use crate::byte_packet_buffer;
+use crate::dns::question;
 use std::{io::Result, net::Ipv4Addr};
 
 use byte_packet_buffer::BytePacketBuffer;
-use dns_question::{QueryType};
+use question::{QueryType};
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash, PartialOrd, Ord)]
 #[allow(dead_code)]
