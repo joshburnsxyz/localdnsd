@@ -1,4 +1,4 @@
-use super::{byte_packet_buffer,dns_question};
+use crate::{byte_packet_buffer,dns_question};
 use std::{io::Result, net::Ipv4Addr};
 
 use byte_packet_buffer::BytePacketBuffer;
