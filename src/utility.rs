@@ -28,14 +28,13 @@ pub fn print_response(packet: DnsPacket) -> Result<()> {
 }
 
 
-// Perform an A Query on a given domain and return the result packet.
-pub fn a_query(qname: &str) -> Result<DnsPacket> {
-    let qtype = QueryType::A;
+// Perform a generic DNS lookup query
+pub fn lookup(qname: &str, qtype: QueryType) -> Result<DnsPacket> {
+    // Define a target DNS server and a UdpSocket to connect to interact with it.
     let server = ("8.8.8.8", 53); // Target googles public DNS server.
     let socket = UdpSocket::bind(("0.0.0.0", 43210))?; // Bind to arbitrary UDP port.
-    
-    // Build DNS Packet; It is important that we set the recursion_desired flag. The id is arbitrary.
     let mut packet = DnsPacket::new();
+
     packet.header.id = 12345;
     packet.header.questions = 1;
     packet.header.recursion_desired = true;
