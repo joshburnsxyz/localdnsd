@@ -56,3 +56,14 @@ pub fn handle_query(socket: &UdpSocket) -> Result<()> {
 
   OK(())
 }
+
+
+pub fn listen() -> Result<()> {
+  let socket = UdpSocket::bind(("0.0.0.0", 2053));
+  loop {
+    match handle_query(&socket) {
+      Ok(_) => {},
+      Err(e) => eprintln!("An error occured: {}", e),
+    }
+  }
+}
