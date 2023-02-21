@@ -5,6 +5,7 @@ pub struct BytePacketBuffer {
     pub pos: usize,
 }
 
+#[allow(dead_code)]
 impl BytePacketBuffer {
     // Construct new buffer
     pub fn new() -> BytePacketBuffer {
