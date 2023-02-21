@@ -4,11 +4,11 @@ use std::io::Result;
 #[derive(PartialEq, Eq, Debug, Clone, Hash, Copy)]
 pub enum QueryType {
     UNKNOWN(u16),
-    A, // 1
-    NS, // 2
+    A,     // 1
+    NS,    // 2
     CNAME, // 5
-    MX, // 15
-    AAAA, // 28
+    MX,    // 15
+    AAAA,  // 28
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
