@@ -107,7 +107,10 @@ impl BytePacketBuffer {
             // can craft a packet with a cycle in the jump instructions. This guards
             // against such packets.
             if jumps_performed > max_jumps {
-                return Err(io::Error::new(io::ErrorKind::Other, format!("Limit of {} jumps exceeded", max_jumps)));
+                return Err(io::Error::new(
+                    io::ErrorKind::Other,
+                    format!("Limit of {} jumps exceeded", max_jumps),
+                ));
             }
 
             // At this point, we're always at the beginning of a label. Recall
@@ -165,6 +168,39 @@ impl BytePacketBuffer {
         if !jumped {
             self.seek(pos)?;
         }
+
+        Ok(())
+    }
+
+    // Write to buffer position and step forward
+    fn write(&mut self, val: u8) -> io::Result<()> {
+        if self.pos >= 512 {
+            return Err(io::Error::new(io::ErrorKind::Other, "End of buffer"));
+        }
+
+        self.buf[self.pos] = val;
+        self.pos += 1;
+        Ok(())
+    }
+
+    pub fn write_u8(&mut self, val: u8) -> io::Result<()> {
+        self.write(val)?;
+
+        Ok(())
+    }
+
+    pub fn write_u16(&mut self, val: u16) -> io::Result<()> {
+        self.write((val >> 8) as u8)?;
+        self.write((val & 0xFF) as u8)?;
+
+        Ok(())
+    }
+
+    pub fn write_u32(&mut self, val: u32) -> io::Result<()> {
+        self.write(((val >> 24) & 0xFF) as u8)?;
+        self.write(((val >> 16) & 0xFF) as u8)?;
+        self.write(((val >> 8) & 0xFF) as u8)?;
+        self.write(((val >> 0) & 0xFF) as u8)?;
 
         Ok(())
     }
