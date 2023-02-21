@@ -66,12 +66,12 @@ impl BytePacketBuffer {
         Ok(&self.buf[start..start + len as usize])
     }
 
-    fn read_u16(&mut self) -> io::Result<u16> {
+    pub fn read_u16(&mut self) -> io::Result<u16> {
         let res = ((self.read()? as u16) << 8) | (self.read()? as u16);
         Ok(res)
     }
 
-    fn read_u32(&mut self) -> io::Result<u32> {
+    pub fn read_u32(&mut self) -> io::Result<u32> {
         let res = ((self.read()? as u32) << 24)
             | ((self.read()? as u32) << 16)
             | ((self.read()? as u32) << 8)
