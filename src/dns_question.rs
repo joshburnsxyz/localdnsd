@@ -1,3 +1,6 @@
+use super::byte_packet_buffer::BytePacketBuffer;
+use std::io::Result;
+
 #[derive(PartialEq, Eq, Debug, Clone, Hash, Copy)]
 pub enum QueryType {
     UNKNOWN(u16),
