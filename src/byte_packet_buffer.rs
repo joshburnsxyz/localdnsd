@@ -204,4 +204,22 @@ impl BytePacketBuffer {
 
         Ok(())
     }
+
+    fn write_qname(&mut self, qname: &str) -> io::Result<()> {
+        for label in qname.split('.') {
+            let len = label.len();
+            if len > 0x3f {
+                return Err(io::Error::new(io::ErrorKind::Other, "Single label exceeds 63 character limit"));
+            }
+
+            self.write_u8(len as u8)?;
+            for b in label.as_bytes() {
+                self.write_u8(*b)?;
+            }
+        }
+
+        self.write_u8(0)?;
+
+        Ok(())
+    }
 }
