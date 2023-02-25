@@ -78,7 +78,16 @@ impl DnsPacket {
         Ok(())
     }
     
-    pub fn get_random_a(&self) -> Option<Ipv4Addr> {}
+    pub fn get_random_a(&self) -> Option<Ipv4Addr> {
+        self.answers
+        .iter()
+        .filter_map(|record| match record {
+            DnsRecord::A { addr, ..} => Some(*addr),
+            _ => None,
+        })
+        .next()
+    }
+
     pub fn get_ns<'a>(&'a self, qname: &'a str) -> impl Iterator<Item=(&'a str, &'a str)> {}
     pub fn get_resolved_ns(&self, qname: &str) -> Option<Ipv4Addr> {}
     pub fn get_unresolved_ns<'a>(&'a self, qname: &'a str) -> Option<&'a str> {}
