@@ -88,7 +88,16 @@ impl DnsPacket {
         .next()
     }
 
-    pub fn get_ns<'a>(&'a self, qname: &'a str) -> impl Iterator<Item=(&'a str, &'a str)> {}
+    pub fn get_ns<'a>(&'a self, qname: &'a str) -> impl Iterator<Item=(&'a str, &'a str)> {
+        self.authorities
+        .iter()
+        .filter_map(|record| match record {
+            DnsRecord::NS { domain, host, ..} => Some((domain.as_str(), host.as_str())),
+            _ => None,
+        })
+        .filter(move |(domain, )| qname.ends_with(*domain))
+    }
+
     pub fn get_resolved_ns(&self, qname: &str) -> Option<Ipv4Addr> {}
     pub fn get_unresolved_ns<'a>(&'a self, qname: &'a str) -> Option<&'a str> {}
 }
