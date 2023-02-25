@@ -95,9 +95,22 @@ impl DnsPacket {
             DnsRecord::NS { domain, host, ..} => Some((domain.as_str(), host.as_str())),
             _ => None,
         })
-        .filter(move |(domain, )| qname.ends_with(*domain))
+        .filter(move |(domain,_)| qname.ends_with(*domain))
     }
 
-    pub fn get_resolved_ns(&self, qname: &str) -> Option<Ipv4Addr> {}
+    pub fn get_resolved_ns(&self, qname: &str) -> Option<Ipv4Addr> {
+        self.get_ns(qname)
+        .flat_map(|(_, host)| {
+            self.resources
+            .iter()
+            .filter_map(move |record| match record {
+                DnsRecord::A { domain, addr, ..} if domain == host => Some(addr),
+                _ => None,
+            })
+        })
+        .map(|addr| *addr)
+        .next()
+    }
+
     pub fn get_unresolved_ns<'a>(&'a self, qname: &'a str) -> Option<&'a str> {}
 }
