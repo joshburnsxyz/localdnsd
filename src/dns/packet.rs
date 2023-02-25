@@ -6,6 +6,7 @@ use dns::header::DnsHeader;
 use dns::question::{DnsQuestion, QueryType};
 use dns::record::DnsRecord;
 use std::io::Result;
+use std::net::Ipv4Addr;
 
 #[derive(Clone, Debug)]
 pub struct DnsPacket {
@@ -76,4 +77,9 @@ impl DnsPacket {
 
         Ok(())
     }
+    
+    pub fn get_random_a(&self) -> Option<Ipv4Addr> {}
+    pub fn get_ns<'a>(&'a self, qname: &'a str) -> impl Iterator<Item=(&'a str, &'a str)> {}
+    pub fn get_resolved_ns(&self, qname: &str) -> Option<Ipv4Addr> {}
+    pub fn get_unresolved_ns<'a>(&'a self, qname: &'a str) -> Option<&'a str> {}
 }
