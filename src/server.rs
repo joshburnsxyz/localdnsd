@@ -18,8 +18,8 @@ pub fn handle_query(socket: &UdpSocket) -> Result<()> {
   if let Some(question) = request.questions.pop() {
     println!("Recieved Query: {:?}", question);
 
-    if let Ok(result) = lookup(&question.name, question.qtype) {
-      packet.questions.push(question);
+    if let Ok(result) = recursive_lookup(&question.name, question.qtype) {
+      packet.questions.push(question.clone());
       packet.header.rescode = result.header.rescode;
 
       for rec in result.answers {
