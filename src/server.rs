@@ -1,15 +1,17 @@
+use std::io::Error;
 use std::net::UdpSocket;
 use crate::byte_packet_buffer::BytePacketBuffer;
 use crate::dns::packet::DnsPacket;
 use crate::result_code::ResultCode;
+use crate::utility::recursive_lookup;
 
-pub fn handle_query(socket: &UdpSocket) -> Result<()> {
+pub fn handle_query(socket: &UdpSocket) -> Result<(), Error> {
   let mut req_buffer = BytePacketBuffer::new();
   let (_,src) = socket.recv_from(&mut req_buffer.buf)?;
   let mut request = DnsPacket::from_buffer(&mut req_buffer)?;
 
   // Create response packet
-  let packet = DnsPacket::new();
+  let mut packet = DnsPacket::new();
   packet.header.id = 12345;
   packet.header.recursion_desired = true;
   packet.header.recursion_available = true;
@@ -54,14 +56,14 @@ pub fn handle_query(socket: &UdpSocket) -> Result<()> {
 
   socket.send_to(data, src)?;
 
-  OK(())
+  Ok(())
 }
 
 
-pub fn listen() -> Result<()> {
+pub fn listen() -> Result<(), Error> {
   let socket = UdpSocket::bind(("0.0.0.0", 2053));
   loop {
-    match handle_query(&socket) {
+    match handle_query(&socket.as_ref().unwrap()) {
       Ok(_) => {},
       Err(e) => eprintln!("An error occured: {}", e),
     }

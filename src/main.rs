@@ -2,5 +2,5 @@
 use localdnsd;
 
 fn main() {
-    println!("Hello, world!");
+    localdnsd::server::listen();
 }
